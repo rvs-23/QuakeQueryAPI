@@ -25,6 +25,25 @@ services:
     depends_on:
       - postgres
 
+  flask_app:
+    build:
+      context: .
+    container_name: flask_app
+    restart: always
+    environment:
+      POSTGRES_USER: quake_user
+      POSTGRES_PASSWORD: quake_pw
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: quakedb
+      PYTHONPATH: /app
+      FLASK_APP: app.routes:app
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app
+    command: pytest tests/
+    # command: flask run --host=0.0.0.0 --port=5000
+
 volumes:
   postgres:
   pgadmin:
