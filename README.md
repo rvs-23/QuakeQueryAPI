@@ -26,4 +26,11 @@ That should be all you need to get started.
 
 more to come...
 
-## Happy Coding!
+## Logs
+
+1. DB connection is successfully working. To test: use ```docker-compose up --build```
+  - To make it work, I setup a "server" manually.
+  - Created config.py with connection settings
+  - Created test_config.py to test the db connection using pytest
+  - Created a Dockerfile to run the tests on build in the docker container
+  - Updated docker-compose to add a Flask container 
