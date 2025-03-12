@@ -11,8 +11,19 @@ engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
 Session = sessionmaker(bind=engine)
 session = Session()
 
-@app.route('/earthquake/<int:id>', methods=['GET'])
+@app.route('/api/v1/earthquake/<int:id>', methods=['GET'])
 def get_earthquake_by_id(id):
+
+    print("======================")
+    print(request.headers)
+    print("======================")
+    if 'X-Sr-Api-Version' in request.headers:
+        vsn = request.headers.get("X-Sr-Api-Version")
+        if vsn not in ["1", "2"]:
+            return jsonify({"error": "Invalid API version"}), 400
+    else:
+        vsn = "1"
+    print(vsn)
     """
     Fetch a single earthquake record by ID.
     """
@@ -22,7 +33,10 @@ def get_earthquake_by_id(id):
         quake = session.query(EarthquakeData).filter(EarthquakeData.id == id).first()
         print(quake)
         if quake:
-            return jsonify(row2dict(quake)), 200
+            if vsn == "1":
+                return jsonify(row2dict(quake)), 200
+            elif vsn == "2":
+                return jsonify(row2dict(quake)), 202
         else:
             return jsonify({"error": "Record not found"}), 404
     except Exception as e:
